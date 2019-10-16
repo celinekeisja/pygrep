@@ -21,7 +21,7 @@ def grep(file_pattern, path, expr, compiled):
             name = os.path.basename(fname)
             abspath = os.path.join(d_path, name)
             for apath in glob.glob(abspath):
-                with open(apath, 'r') as f:
+                with open(apath, 'r', encoding='utf-8') as f:
                     text = f.read()
                     match = compiled.finditer(text)
                     for m in match:
@@ -34,6 +34,7 @@ if __name__ == "__main__":
     parser.add_argument("file_pattern")
     parser.add_argument("path")
     parser.add_argument("-i", "--ignore_case", action="store_true")
+    parser.add_argument("-v", "--invert_match", action="store_true")
 
     args = parser.parse_args()
     file = args.file_pattern
@@ -42,6 +43,9 @@ if __name__ == "__main__":
 
     if args.ignore_case:
         grep(file, file_path, expression, ignore_case(expression))
+    elif args.invert_match:
+        expression = f'.[^"{expression}"].+'
+        grep(file, file_path, expression, compile(expression))
     else:
         grep(file, file_path, expression, compile(expression))
 
