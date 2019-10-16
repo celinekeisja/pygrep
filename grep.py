@@ -16,16 +16,14 @@ def compile(expr):
 
 def grep(file_pattern, path, expr, compiled):
     for r, d, f in os.walk(path):
-        for fname in f:
-            d_path = os.path.abspath(r)
-            name = os.path.basename(fname)
-            abspath = os.path.join(d_path, name)
-            for apath in glob.glob(abspath):
-                with open(apath, 'r', encoding='utf-8') as f:
-                    text = f.read()
-                    match = compiled.finditer(text)
-                    for m in match:
-                        print(f'{name} \t {m.group(0)}')
+        d_path = os.path.abspath(r)
+        abspath = os.path.join(d_path, file_pattern)
+        for apath in glob.glob(abspath):
+            with open(apath, 'r', encoding='utf-8') as f:
+                text = f.read()
+                match = compiled.finditer(text)
+                for m in match:
+                    print(f'{os.path.basename(apath)} \t {m.group(0)}')
 
 
 if __name__ == "__main__":
