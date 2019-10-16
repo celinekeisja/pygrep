@@ -4,7 +4,8 @@ import os
 import glob
 
 
-def recursive(file_pattern, path, expr, compiled):
+def recursive(file_pattern, path, compiled):
+    ''' Return all files that includes the expression recursively. '''
     for r, d, f in os.walk(path):
         abspath = os.path.join(r, file_pattern)
         for apath in glob.glob(abspath):
@@ -16,16 +17,19 @@ def recursive(file_pattern, path, expr, compiled):
 
 
 def ignore_case(expr):
+    ''' Include the re.IGNORECASE to ignore cases of given expression. '''
     compiled = re.compile(r'{}.*'.format(expr), re.IGNORECASE)
     return compiled
 
 
 def compile(expr):
+    ''' Compile the expression. '''
     compiled = re.compile(r'{}.*'.format(expr))
     return compiled
 
 
-def grep(file_pattern, path, expr, compiled):
+def grep(file_pattern, path, compiled):
+    ''' Print all the names of the files that contain the specific expression in the specified directory. '''
     for r, d, f in os.walk(path):
         d_path = os.path.abspath(r)
         abspath = os.path.join(d_path, file_pattern)
@@ -57,7 +61,7 @@ if __name__ == "__main__":
         expression = f'.[^"{expression}"].+'
         grep(file, file_path, expression, compile(expression))
     elif args.recursive:
-        recursive(file, file_path, expression, compile(expression))
+        recursive(file, file_path, compile(expression))
     else:
-        grep(file, file_path, expression, compile(expression))
+        grep(file, file_path, compile(expression))
 
